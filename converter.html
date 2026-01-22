@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <script src="coi-serviceworker.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Convertisseur | Néo Convert</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.11.0/dist/ffmpeg.min.js"></script>
+</head>
+<body>
+    <nav class="liquid-nav">
+        <div class="nav-brand"><i class="fa-solid fa-bolt"></i> NÉO<span>CONVERT</span></div>
+        <ul class="nav-links">
+            <li><a href="index.html">Accueil</a></li>
+            <li><a href="converter.html" class="active">Convertisseur</a></li>
+            <li><a href="audiolab.html">Audio Lab</a></li>
+        </ul>
+    </nav>
+
+    <div class="tool-container">
+        
+        <div class="tutorial-box">
+            <h3><i class="fa-solid fa-wand-magic-sparkles"></i> Mode d'emploi</h3>
+            <p>Ce convertisseur utilise <strong>WebAssembly</strong>. Votre fichier n'est jamais envoyé sur Internet, tout se passe dans votre navigateur.</p>
+        </div>
+
+        <div class="glass-panel">
+            <div class="drop-zone" id="drop-zone">
+                <i class="fa-solid fa-file-import icon-large"></i>
+                <h3>Fichier Source</h3>
+                <p>Vidéo, Audio ou Image</p>
+                <input type="file" id="file-input" hidden>
+            </div>
+
+            <div class="settings-grid">
+                <label>Format de Sortie :</label>
+                <select id="format-select">
+                    <option value="mp4">MP4 (Vidéo)</option>
+                    <option value="mp3">MP3 (Audio)</option>
+                    <option value="gif">GIF</option>
+                    <option value="wav">WAV</option>
+                    <option value="avi">AVI</option>
+                </select>
+            </div>
+
+            <button id="convert-btn" class="main-btn">CONVERTIR</button>
+            <div id="logs" class="log-terminal">Prêt.</div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

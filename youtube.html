@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <script src="coi-serviceworker.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stream Downloader | Néo Convert</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    
+    <nav class="liquid-nav">
+        <div class="nav-brand"><i class="fa-brands fa-youtube" style="color:#ff0033;"></i> NÉO<span>STREAM</span></div>
+        <ul class="nav-links">
+            <li><a href="index.html">Accueil</a></li>
+            <li><a href="converter.html">Convertisseur</a></li>
+            <li><a href="documents.html">Documents</a></li>
+        </ul>
+    </nav>
+
+    <div class="tool-container">
+        
+        <div class="tutorial-box">
+            <h3><i class="fa-solid fa-cloud-arrow-down"></i> Extraction de flux</h3>
+            <p>Copiez le lien de votre vidéo (YouTube, Twitch, TikTok) et choisissez la qualité. <br>
+            <em style="font-size: 0.8rem; opacity: 0.7;">Note : Nécessite une clé API backend pour fonctionner réellement.</em></p>
+        </div>
+
+        <div class="glass-panel">
+            <div class="input-modern huge">
+                <i class="fa-solid fa-link"></i>
+                <input type="text" id="yt-url" placeholder="Collez votre lien ici (https://...)">
+                <button id="paste-btn" class="icon-btn"><i class="fa-regular fa-clipboard"></i></button>
+            </div>
+
+            <div class="settings-grid">
+                <label>Qualité cible :</label>
+                <div class="quality-tags" id="quality-selector">
+                    <span class="tag active" data-val="1080">1080p HD</span>
+                    <span class="tag" data-val="720">720p</span>
+                    <span class="tag" data-val="480">480p</span>
+                    <span class="tag" data-val="mp3">Audio MP3</span>
+                </div>
+            </div>
+
+            <div id="video-preview" style="display:none; margin-top: 20px; text-align: center;">
+                <img src="" id="thumb-img" style="width: 100%; max-width: 300px; border-radius: 10px; border: 2px solid #333;">
+                <h4 id="video-title" style="margin: 10px 0;">Titre de la vidéo</h4>
+            </div>
+
+            <button id="download-btn" class="main-btn secondary">
+                <span>LANCER L'EXTRACTION</span> <i class="fa-solid fa-download"></i>
+            </button>
+            
+            <div id="logs" class="log-terminal">En attente d'URL...</div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

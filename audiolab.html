@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <script src="coi-serviceworker.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Lab | Néo Convert</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.11.0/dist/ffmpeg.min.js"></script>
+</head>
+<body>
+    
+    <nav class="liquid-nav">
+        <div class="nav-brand"><i class="fa-solid fa-bolt"></i> NÉO<span>AUDIO</span></div>
+        <ul class="nav-links">
+            <li><a href="index.html">Accueil</a></li>
+            <li><a href="converter.html">Convertisseur</a></li>
+            <li><a href="audiolab.html" class="active">Audio Lab</a></li>
+        </ul>
+    </nav>
+
+    <div class="tool-container">
+        
+        <div class="tutorial-box">
+            <h3><i class="fa-solid fa-circle-info"></i> Comment booster vos basses ?</h3>
+            <ol>
+                <li><strong>Importez</strong> votre fichier MP3 ou WAV ci-dessous.</li>
+                <li><strong>Choisissez</strong> un préréglage (Preset) ou ajustez les curseurs manuellement.</li>
+                <li>Cliquez sur <strong>Appliquer & Télécharger</strong> pour générer le nouveau fichier.</li>
+            </ol>
+        </div>
+
+        <div class="glass-panel">
+            <div class="drop-zone" id="drop-zone">
+                <i class="fa-solid fa-music icon-large"></i>
+                <h3>Glissez votre musique ici</h3>
+                <input type="file" id="file-input" accept="audio/*" hidden>
+            </div>
+        </div>
+
+        <h2 class="section-title">Niveaux de Bass Boost</h2>
+        <div class="preset-grid">
+            <div class="preset-card" onclick="setPreset('light')">
+                <div class="p-level p-1"></div>
+                <h4>Very Light</h4>
+                <p>Subtil. Juste un peu de chaleur.</p>
+            </div>
+            
+            <div class="preset-card" onclick="setPreset('medium')">
+                <div class="p-level p-2"></div>
+                <h4>Light</h4>
+                <p>Parfait pour la Pop et le Rock.</p>
+            </div>
+
+            <div class="preset-card selected" onclick="setPreset('moderate')">
+                <div class="p-level p-3"></div>
+                <h4>Moderate</h4>
+                <p>Le standard pour le Hip-Hop.</p>
+            </div>
+
+            <div class="preset-card" onclick="setPreset('heavy')">
+                <div class="p-level p-4"></div>
+                <h4>Heavy</h4>
+                <p>Grosse vibration. Attention aux oreilles.</p>
+            </div>
+
+            <div class="preset-card danger" onclick="setPreset('extreme')">
+                <div class="p-level p-5"></div>
+                <h4>EXTREME</h4>
+                <p>Saturation maximale. Basses distordues.</p>
+            </div>
+        </div>
+
+        <div class="glass-panel controls-panel">
+            <div class="fader-group">
+                <label>Gain des Basses (dB) <span id="bass-display">10 dB</span></label>
+                <input type="range" id="bass-gain" min="0" max="30" value="10" class="fader">
+            </div>
+            <div class="fader-group">
+                <label>Fréquence (Hz) <span id="freq-display">60 Hz</span></label>
+                <input type="range" id="bass-freq" min="40" max="200" value="60" class="fader">
+            </div>
+
+            <button id="process-btn" class="main-btn">
+                <span>APPLIQUER ET TÉLÉCHARGER</span> <i class="fa-solid fa-bolt"></i>
+            </button>
+            <div id="logs" class="log-terminal">En attente de configuration...</div>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

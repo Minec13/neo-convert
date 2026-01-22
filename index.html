@@ -3,64 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Néo Convert - La Conversion Ultime</title>
+    <title>Néo Convert | Studio</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
+    
     <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.11.0/dist/ffmpeg.min.js"></script>
 </head>
 <body>
 
-    <div class="container">
+    <div class="bg-glow"></div>
+
+    <main class="glass-container">
+        
         <header>
-            <h1 class="neon-text">NÉO CONVERT</h1>
-            <p>Le couteau suisse de vos fichiers multimédias</p>
+            <div class="logo">
+                <i class="fa-solid fa-bolt"></i> NÉO<span>CONVERT</span>
+            </div>
+            <p class="subtitle">Architecture de conversion locale par WebAssembly</p>
         </header>
 
-        <nav class="tabs">
-            <button class="tab-btn active" onclick="openTab('local')">📂 Fichiers Locaux</button>
-            <button class="tab-btn" onclick="openTab('youtube')">🔴 YouTube & Audio</button>
-        </nav>
+        <div class="tabs-wrapper">
+            <button class="tab-btn active" onclick="switchTab('local', this)">
+                <i class="fa-solid fa-folder-open"></i> Fichiers Locaux
+            </button>
+            <button class="tab-btn" onclick="switchTab('youtube', this)">
+                <i class="fa-brands fa-youtube"></i> YouTube / Stream
+            </button>
+            <button class="tab-btn" onclick="switchTab('audio', this)">
+                <i class="fa-solid fa-sliders"></i> Audio FX
+            </button>
+        </div>
 
-        <section id="local" class="tab-content active">
-            <div class="upload-box">
-                <input type="file" id="file-input">
-                <p>Glissez un fichier ici ou cliquez pour parcourir</p>
-            </div>
-
-            <div class="controls">
-                <label>Convertir en :</label>
-                <select id="format-select">
-                    <option value="mp4">MP4 (Vidéo)</option>
-                    <option value="mp3">MP3 (Audio)</option>
-                    <option value="gif">GIF</option>
-                    <option value="avi">AVI</option>
-                    <option value="wav">WAV</option>
-                </select>
-                <button id="convert-btn" class="action-btn">LANCER LA CONVERSION</button>
-            </div>
-
-            <div id="status-message">En attente...</div>
-        </section>
-
-        <section id="youtube" class="tab-content" style="display:none;">
-            <div class="input-group">
-                <input type="text" placeholder="Collez le lien YouTube ici..." id="yt-url">
-                <button class="action-btn">Rechercher</button>
-            </div>
-
-            <div class="audio-tools">
-                <h3>🎚️ Audio Master</h3>
-                <div class="slider-container">
-                    <label>Bass Boost</label>
-                    <input type="range" min="0" max="100" value="0">
+        <section id="local" class="panel active">
+            <div class="drop-zone" id="drop-zone">
+                <div class="icon-circle">
+                    <i class="fa-solid fa-cloud-arrow-up"></i>
                 </div>
-                <p class="warning">⚠️ Le module YouTube nécessitera une API externe.</p>
+                <h3>Glissez vos fichiers ici</h3>
+                <p>ou <span class="highlight">cliquez pour parcourir</span></p>
+                <input type="file" id="file-input" hidden>
+            </div>
+
+            <div class="settings-grid">
+                <div class="setting-item">
+                    <label>Format de sortie</label>
+                    <div class="custom-select">
+                        <select id="format-select">
+                            <option value="mp4">MP4 (H.264)</option>
+                            <option value="mp3">MP3 (320kbps)</option>
+                            <option value="gif">GIF Animé</option>
+                            <option value="wav">WAV (Lossless)</option>
+                        </select>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+                </div>
+            </div>
+
+            <button id="convert-btn" class="main-btn">
+                <span>INITIALISER LA CONVERSION</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+            
+            <div id="logs" class="log-terminal">
+                <span class="blink">></span> Prêt. En attente de fichier...
             </div>
         </section>
 
-        <footer>
-            <p>&copy; 2024 Néo Convert Project</p>
-        </footer>
-    </div>
+        <section id="youtube" class="panel" style="display:none;">
+            <div class="input-modern">
+                <i class="fa-solid fa-link"></i>
+                <input type="text" placeholder="Coller l'URL YouTube, Twitch ou Soundcloud...">
+            </div>
+            <button class="main-btn secondary">
+                <span>ANALYSER LE LIEN</span>
+            </button>
+            <div class="info-box">
+                <i class="fa-solid fa-circle-info"></i>
+                <p>Le module API Cloud est requis pour cette fonctionnalité.</p>
+            </div>
+        </section>
+
+        <section id="audio" class="panel" style="display:none;">
+            <div class="fader-group">
+                <div class="fader-label">
+                    <span>BASS BOOST</span>
+                    <span id="bass-val">0%</span>
+                </div>
+                <input type="range" class="fader" min="0" max="100" value="0" oninput="updateVal('bass-val', this.value)">
+            </div>
+            
+            <div class="fader-group">
+                <div class="fader-label">
+                    <span>VOLUME MASTER</span>
+                    <span id="vol-val">100%</span>
+                </div>
+                <input type="range" class="fader" min="0" max="200" value="100" oninput="updateVal('vol-val', this.value)">
+            </div>
+        </section>
+
+    </main>
 
     <script src="script.js"></script>
 </body>

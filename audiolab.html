@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <script src="coi-serviceworker.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Audio Lab Pro | Néo Suite</title>
+    <title>Audio Lab Ultra | Néo Suite</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.11.0/dist/ffmpeg.min.js"></script>
@@ -30,15 +30,31 @@
                 </button>
                 <span id="track-name">Aucune piste chargée</span>
             </div>
-            
-            <div class="master-monitor">
-                <div class="equalizer">
-                    <div class="bar"></div><div class="bar"></div><div class="bar"></div>
-                    <div class="bar"></div><div class="bar"></div><div class="bar"></div>
-                    <div class="bar"></div><div class="bar"></div><div class="bar"></div>
-                    <div class="bar"></div>
+        </div>
+
+        <div class="trimmer-panel">
+            <div class="trim-header"><i class="fa-solid fa-scissors"></i> AUDIO CUTTER</div>
+            <div class="trim-inputs">
+                <div class="trim-group">
+                    <label>Début (MM:SS)</label>
+                    <input type="text" id="trim-start" placeholder="00:00" value="00:00">
+                </div>
+                <div class="trim-arrow"><i class="fa-solid fa-arrow-right"></i></div>
+                <div class="trim-group">
+                    <label>Fin (MM:SS)</label>
+                    <input type="text" id="trim-end" placeholder="Optionnel (Fin)">
                 </div>
             </div>
+            <p class="trim-info">Laisser "Fin" vide pour garder jusqu'au bout.</p>
+        </div>
+
+        <div class="presets-bar">
+            <span>PRESETS :</span>
+            <button class="preset-chip" onclick="applyPreset('nightcore')">⚡ Nightcore</button>
+            <button class="preset-chip" onclick="applyPreset('slowed')">🐢 Slowed + Reverb</button>
+            <button class="preset-chip" onclick="applyPreset('bass')">🔊 Bass Boost Max</button>
+            <button class="preset-chip" onclick="applyPreset('8d')">🎧 8D Audio</button>
+            <button class="preset-chip reset" onclick="applyPreset('reset')">↺ Reset</button>
         </div>
 
         <div class="rack-grid">
@@ -57,13 +73,17 @@
                         <input type="range" id="val-speed" min="0.5" max="2.0" step="0.1" value="1.0">
                         <span id="disp-speed" class="val-display">x1.0</span>
                     </div>
-                    <p class="preset-hint">x1.5 = Nightcore <br> x0.8 = Slowed</p>
+                    <div class="control-knob">
+                        <label>Pitch (Hz)</label>
+                        <input type="range" id="val-pitch" min="0.5" max="2.0" step="0.1" value="1.0">
+                        <span id="disp-pitch" class="val-display">x1.0</span>
+                    </div>
                 </div>
             </div>
 
             <div class="rack-unit">
                 <div class="rack-header">
-                    <i class="fa-solid fa-globe"></i> Spatializer (8D)
+                    <i class="fa-solid fa-globe"></i> Spatializer
                     <label class="switch">
                         <input type="checkbox" id="mod-spatial">
                         <span class="slider round"></span>
@@ -71,12 +91,12 @@
                 </div>
                 <div class="rack-controls">
                     <div class="control-knob">
-                        <label>Vitesse Rotation (8D)</label>
+                        <label>Rotation 8D</label>
                         <input type="range" id="val-8d" min="0.1" max="2" step="0.1" value="0.5">
                         <span id="disp-8d" class="val-display">0.5 Hz</span>
                     </div>
                     <div class="control-knob">
-                        <label>Echo / Reverb</label>
+                        <label>Reverb</label>
                         <input type="range" id="val-echo" min="0" max="1" step="0.1" value="0">
                         <span id="disp-echo" class="val-display">Off</span>
                     </div>
@@ -85,20 +105,20 @@
 
             <div class="rack-unit">
                 <div class="rack-header">
-                    <i class="fa-solid fa-burst"></i> Bass & EQ
+                    <i class="fa-solid fa-burst"></i> Equalizer
                     <label class="switch">
-                        <input type="checkbox" id="mod-eq" checked>
+                        <input type="checkbox" id="mod-eq">
                         <span class="slider round"></span>
                     </label>
                 </div>
                 <div class="rack-controls">
                     <div class="control-knob">
-                        <label>Bass Gain</label>
-                        <input type="range" id="val-bass" min="0" max="20" step="1" value="5">
-                        <span id="disp-bass" class="val-display">+5 dB</span>
+                        <label>Bass Boost</label>
+                        <input type="range" id="val-bass" min="0" max="20" step="1" value="0">
+                        <span id="disp-bass" class="val-display">0 dB</span>
                     </div>
                     <div class="control-knob">
-                        <label>Treble (Aigus)</label>
+                        <label>Treble</label>
                         <input type="range" id="val-treble" min="-10" max="10" step="1" value="0">
                         <span id="disp-treble" class="val-display">0 dB</span>
                     </div>
@@ -115,13 +135,13 @@
                 </div>
                 <div class="rack-controls">
                     <div class="control-knob">
-                        <label>Volume Global</label>
+                        <label>Volume</label>
                         <input type="range" id="val-vol" min="0" max="200" step="10" value="100">
                         <span id="disp-vol" class="val-display">100%</span>
                     </div>
                     <div class="checkbox-wrapper">
                         <input type="checkbox" id="val-reverse">
-                        <label for="val-reverse">Inverser Audio (Reverse)</label>
+                        <label for="val-reverse">Inverser (Reverse)</label>
                     </div>
                 </div>
             </div>
@@ -130,10 +150,10 @@
 
         <div class="master-actions">
             <button id="process-btn" class="render-btn">
-                <span>RENDER AUDIO (MASTERING)</span>
+                <span>EXPORTER LE MIX</span>
                 <i class="fa-solid fa-bolt"></i>
             </button>
-            <div id="logs" class="log-terminal">Console Audio prète.</div>
+            <div id="logs" class="log-terminal">Studio prêt.</div>
         </div>
 
     </div>

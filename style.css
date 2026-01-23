@@ -653,5 +653,77 @@ input:checked + .slider:before { transform: translateX(20px); }
 }
 .render-btn:hover { letter-spacing: 4px; box-shadow: 0 0 50px rgba(189, 0, 255, 0.6); }
 
+
+/* === AUDIO CUTTER & PRESETS === */
+
+/* Barre de presets */
+.presets-bar {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 25px;
+    padding: 15px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 12px;
+}
+.presets-bar span { color: #888; font-weight: bold; margin-right: 10px; }
+
+.preset-chip {
+    background: transparent;
+    border: 1px solid #444;
+    color: #ccc;
+    padding: 8px 16px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: 0.2s;
+}
+.preset-chip:hover { border-color: #bd00ff; color: white; background: rgba(189, 0, 255, 0.1); }
+.preset-chip.reset:hover { border-color: #ff3333; color: #ff3333; background: rgba(255, 51, 51, 0.1); }
+
+
+/* Audio Cutter Panel */
+.trimmer-panel {
+    background: #0a0a0c;
+    border: 1px dashed #444;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.trim-header { color: #00ffa3; font-weight: bold; margin-bottom: 15px; width: 100%; text-align: left; }
+
+.trim-inputs {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    max-width: 500px;
+}
+
+.trim-group { flex: 1; }
+.trim-group label { display: block; font-size: 0.8rem; color: #888; margin-bottom: 5px; }
+.trim-group input {
+    width: 100%;
+    background: #1a1a1e;
+    border: 1px solid #333;
+    color: #00ffa3;
+    padding: 10px;
+    border-radius: 6px;
+    text-align: center;
+    font-family: monospace;
+    font-size: 1.1rem;
+    outline: none;
+}
+.trim-group input:focus { border-color: #00ffa3; }
+
+.trim-arrow { color: #555; }
+.trim-info { font-size: 0.75rem; color: #555; margin-top: 10px; }
+
 /* CHECKBOX SIMPLE */
 .checkbox-wrapper { display: flex; align-items: center; gap: 10px; font-size: 0.9rem; color: #ccc; cursor: pointer; }
+

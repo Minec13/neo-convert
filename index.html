@@ -2,54 +2,109 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <script src="coi-serviceworker.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Néo Convert | Le Hub</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Space+Grotesk:wght@700;900&display=swap" rel="stylesheet">
+    <title>Néo Convert | L'Écosystème Créatif</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@600;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="home-body">
+
+    <div class="bg-orb orb-1"></div>
+    <div class="bg-orb orb-2"></div>
+    <div class="grid-overlay"></div>
+
     <nav class="liquid-nav">
-        <div class="nav-brand"><i class="fa-solid fa-bolt"></i> NÉO</div>
+        <div class="nav-brand">
+            <i class="fa-solid fa-bolt"></i> NÉO<span>SUITE</span>
+        </div>
+        <div class="nav-status">
+            <span class="status-dot"></span> Système Opérationnel
+        </div>
     </nav>
 
     <header class="hero-section">
         <div class="hero-content">
-            <h1 class="mega-title">Choisissez votre arme.</h1>
-            <p class="hero-subtitle">Quatre outils puissants. Une seule plateforme.</p>
-        </div>
-
-        <div class="hub-grid">
-            <a href="converter.html" class="hub-card">
-                <i class="fa-solid fa-shuffle icon-glow"></i>
-                <h2>Convertisseur</h2>
-                <p>Changez le format de n'importe quel fichier multimédia.</p>
-                <span class="btn-arrow"><i class="fa-solid fa-arrow-right"></i></span>
-            </a>
-
-            <a href="audiolab.html" class="hub-card accent">
-                <i class="fa-solid fa-wave-square icon-glow"></i>
-                <h2>Audio Lab</h2>
-                <p>Bass Boost, Égaliseur et Mastering audio.</p>
-                <span class="btn-arrow"><i class="fa-solid fa-arrow-right"></i></span>
-            </a>
-
-            <a href="youtube.html" class="hub-card">
-                <i class="fa-brands fa-youtube icon-glow"></i>
-                <h2>Stream DL</h2>
-                <p>Téléchargez depuis YouTube et Twitch.</p>
-                <span class="btn-arrow"><i class="fa-solid fa-arrow-right"></i></span>
-            </a>
-            <a href="documents.html" class="hub-card">
-    <i class="fa-solid fa-file-pdf icon-glow" style="color: #00aaff;"></i>
-    <h2>Documents</h2>
-    <p>Convertissez JPG et TXT en PDF professionnels.</p>
-    <span class="btn-arrow"><i class="fa-solid fa-arrow-right"></i></span>
-</a>
+            <div class="badge-pill">
+                <i class="fa-solid fa-shield-halved"></i> 100% Local & Sécurisé
+            </div>
+            <h1 class="mega-title">
+                Le Futur de vos <br>
+                <span class="gradient-text">Fichiers Multimédias.</span>
+            </h1>
+            <p class="hero-subtitle">
+                Une suite d'outils puissants propulsée par WebAssembly. <br>
+                Convertissez, éditez et téléchargez sans jamais quitter votre navigateur.
+            </p>
         </div>
     </header>
-    
-    <div class="glass-abstract"></div>
+
+    <section class="hub-section">
+        <div class="hub-grid">
+            
+            <a href="converter.html" class="tool-card card-green">
+                <div class="card-glow"></div>
+                <div class="card-icon">
+                    <i class="fa-solid fa-repeat"></i>
+                </div>
+                <div class="card-info">
+                    <h2>Convertisseur</h2>
+                    <p>Vidéo, Audio, GIF. La conversion universelle ultra-rapide.</p>
+                </div>
+                <div class="card-action">
+                    <span>Ouvrir</span> <i class="fa-solid fa-arrow-right-long"></i>
+                </div>
+            </a>
+
+            <a href="audiolab.html" class="tool-card card-purple">
+                <div class="card-glow"></div>
+                <div class="card-icon">
+                    <i class="fa-solid fa-wave-square"></i>
+                </div>
+                <div class="card-info">
+                    <h2>Audio Lab</h2>
+                    <p>Bass Boost, Égaliseur et Mastering audio professionnel.</p>
+                </div>
+                <div class="card-action">
+                    <span>Ouvrir</span> <i class="fa-solid fa-arrow-right-long"></i>
+                </div>
+            </a>
+
+            <a href="youtube.html" class="tool-card card-red">
+                <div class="card-glow"></div>
+                <div class="card-icon">
+                    <i class="fa-brands fa-youtube"></i>
+                </div>
+                <div class="card-info">
+                    <h2>Stream DL</h2>
+                    <p>Récupérateur de flux vidéo et audio depuis les plateformes.</p>
+                </div>
+                <div class="card-action">
+                    <span>Ouvrir</span> <i class="fa-solid fa-arrow-right-long"></i>
+                </div>
+            </a>
+
+            <a href="documents.html" class="tool-card card-blue">
+                <div class="card-glow"></div>
+                <div class="card-icon">
+                    <i class="fa-solid fa-file-pdf"></i>
+                </div>
+                <div class="card-info">
+                    <h2>Documents</h2>
+                    <p>Numérisation d'images et conversion de textes en PDF.</p>
+                </div>
+                <div class="card-action">
+                    <span>Ouvrir</span> <i class="fa-solid fa-arrow-right-long"></i>
+                </div>
+            </a>
+
+        </div>
+    </section>
+
+    <footer class="home-footer">
+        <p>&copy; 2024 Néo Convert Architecture. <span class="dim">Aucune donnée n'est collectée.</span></p>
+    </footer>
+
 </body>
 </html>

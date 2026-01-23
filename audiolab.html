@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <script src="coi-serviceworker.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Audio Lab | Néo Convert</title>
+    <title>Audio Lab Pro | Néo Suite</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
     <script src="https://unpkg.com/@ffmpeg/ffmpeg@0.11.0/dist/ffmpeg.min.js"></script>
@@ -12,80 +12,128 @@
 <body>
     
     <nav class="liquid-nav">
-        <div class="nav-brand"><i class="fa-solid fa-bolt"></i> NÉO<span>AUDIO</span></div>
+        <div class="nav-brand"><i class="fa-solid fa-wave-square" style="color:#bd00ff;"></i> NÉO<span>LAB</span></div>
         <ul class="nav-links">
-            <li><a href="index.html">Accueil</a></li>
+            <li><a href="index.html">Hub</a></li>
             <li><a href="converter.html">Convertisseur</a></li>
             <li><a href="audiolab.html" class="active">Audio Lab</a></li>
         </ul>
     </nav>
 
-    <div class="tool-container">
+    <div class="tool-container full-width">
         
-        <div class="tutorial-box">
-            <h3><i class="fa-solid fa-circle-info"></i> Comment booster vos basses ?</h3>
-            <ol>
-                <li><strong>Importez</strong> votre fichier MP3 ou WAV ci-dessous.</li>
-                <li><strong>Choisissez</strong> un préréglage (Preset) ou ajustez les curseurs manuellement.</li>
-                <li>Cliquez sur <strong>Appliquer & Télécharger</strong> pour générer le nouveau fichier.</li>
-            </ol>
-        </div>
-
-        <div class="glass-panel">
-            <div class="drop-zone" id="drop-zone">
-                <i class="fa-solid fa-music icon-large"></i>
-                <h3>Glissez votre musique ici</h3>
+        <div class="studio-header">
+            <div class="upload-section">
                 <input type="file" id="file-input" accept="audio/*" hidden>
-            </div>
-        </div>
-
-        <h2 class="section-title">Niveaux de Bass Boost</h2>
-        <div class="preset-grid">
-            <div class="preset-card" onclick="setPreset('light')">
-                <div class="p-level p-1"></div>
-                <h4>Very Light</h4>
-                <p>Subtil. Juste un peu de chaleur.</p>
+                <button class="upload-btn" onclick="document.getElementById('file-input').click()">
+                    <i class="fa-solid fa-upload"></i> CHARGER UNE PISTE
+                </button>
+                <span id="track-name">Aucune piste chargée</span>
             </div>
             
-            <div class="preset-card" onclick="setPreset('medium')">
-                <div class="p-level p-2"></div>
-                <h4>Light</h4>
-                <p>Parfait pour la Pop et le Rock.</p>
-            </div>
-
-            <div class="preset-card selected" onclick="setPreset('moderate')">
-                <div class="p-level p-3"></div>
-                <h4>Moderate</h4>
-                <p>Le standard pour le Hip-Hop.</p>
-            </div>
-
-            <div class="preset-card" onclick="setPreset('heavy')">
-                <div class="p-level p-4"></div>
-                <h4>Heavy</h4>
-                <p>Grosse vibration. Attention aux oreilles.</p>
-            </div>
-
-            <div class="preset-card danger" onclick="setPreset('extreme')">
-                <div class="p-level p-5"></div>
-                <h4>EXTREME</h4>
-                <p>Saturation maximale. Basses distordues.</p>
+            <div class="master-monitor">
+                <div class="equalizer">
+                    <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                    <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                    <div class="bar"></div><div class="bar"></div><div class="bar"></div>
+                    <div class="bar"></div>
+                </div>
             </div>
         </div>
 
-        <div class="glass-panel controls-panel">
-            <div class="fader-group">
-                <label>Gain des Basses (dB) <span id="bass-display">10 dB</span></label>
-                <input type="range" id="bass-gain" min="0" max="30" value="10" class="fader">
-            </div>
-            <div class="fader-group">
-                <label>Fréquence (Hz) <span id="freq-display">60 Hz</span></label>
-                <input type="range" id="bass-freq" min="40" max="200" value="60" class="fader">
+        <div class="rack-grid">
+
+            <div class="rack-unit">
+                <div class="rack-header">
+                    <i class="fa-solid fa-clock"></i> Time Engine
+                    <label class="switch">
+                        <input type="checkbox" id="mod-time">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <div class="rack-controls">
+                    <div class="control-knob">
+                        <label>Vitesse</label>
+                        <input type="range" id="val-speed" min="0.5" max="2.0" step="0.1" value="1.0">
+                        <span id="disp-speed" class="val-display">x1.0</span>
+                    </div>
+                    <p class="preset-hint">x1.5 = Nightcore <br> x0.8 = Slowed</p>
+                </div>
             </div>
 
-            <button id="process-btn" class="main-btn">
-                <span>APPLIQUER ET TÉLÉCHARGER</span> <i class="fa-solid fa-bolt"></i>
+            <div class="rack-unit">
+                <div class="rack-header">
+                    <i class="fa-solid fa-globe"></i> Spatializer (8D)
+                    <label class="switch">
+                        <input type="checkbox" id="mod-spatial">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <div class="rack-controls">
+                    <div class="control-knob">
+                        <label>Vitesse Rotation (8D)</label>
+                        <input type="range" id="val-8d" min="0.1" max="2" step="0.1" value="0.5">
+                        <span id="disp-8d" class="val-display">0.5 Hz</span>
+                    </div>
+                    <div class="control-knob">
+                        <label>Echo / Reverb</label>
+                        <input type="range" id="val-echo" min="0" max="1" step="0.1" value="0">
+                        <span id="disp-echo" class="val-display">Off</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="rack-unit">
+                <div class="rack-header">
+                    <i class="fa-solid fa-burst"></i> Bass & EQ
+                    <label class="switch">
+                        <input type="checkbox" id="mod-eq" checked>
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <div class="rack-controls">
+                    <div class="control-knob">
+                        <label>Bass Gain</label>
+                        <input type="range" id="val-bass" min="0" max="20" step="1" value="5">
+                        <span id="disp-bass" class="val-display">+5 dB</span>
+                    </div>
+                    <div class="control-knob">
+                        <label>Treble (Aigus)</label>
+                        <input type="range" id="val-treble" min="-10" max="10" step="1" value="0">
+                        <span id="disp-treble" class="val-display">0 dB</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="rack-unit">
+                <div class="rack-header">
+                    <i class="fa-solid fa-sliders"></i> Master FX
+                    <label class="switch">
+                        <input type="checkbox" id="mod-master" checked>
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <div class="rack-controls">
+                    <div class="control-knob">
+                        <label>Volume Global</label>
+                        <input type="range" id="val-vol" min="0" max="200" step="10" value="100">
+                        <span id="disp-vol" class="val-display">100%</span>
+                    </div>
+                    <div class="checkbox-wrapper">
+                        <input type="checkbox" id="val-reverse">
+                        <label for="val-reverse">Inverser Audio (Reverse)</label>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="master-actions">
+            <button id="process-btn" class="render-btn">
+                <span>RENDER AUDIO (MASTERING)</span>
+                <i class="fa-solid fa-bolt"></i>
             </button>
-            <div id="logs" class="log-terminal">En attente de configuration...</div>
+            <div id="logs" class="log-terminal">Console Audio prète.</div>
         </div>
 
     </div>

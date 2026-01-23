@@ -77,52 +77,188 @@ if (dropZone && fileInput) {
    LOGIQUE SPÉCIFIQUE PAR PAGE
    ========================================== */
 
-// --- PAGE : AUDIO LAB (audiolab.html) ---
+// --- PAGE : AUDIO LAB (V5 ULTIMATE) ---
 if (window.location.href.includes('audiolab')) {
-    const gainSlider = document.getElementById('bass-gain');
-    const freqSlider = document.getElementById('bass-freq');
+    
     const processBtn = document.getElementById('process-btn');
+    
+    // Helper pour mettre à jour l'affichage des valeurs
+    const updateUI = (id, val, suffix) => {
+        const el = document.getElementById('val-' + id);
+        const disp = document.getElementById('disp-' + id);
+        if(el) { el.value = val; if(disp) disp.innerText = val + suffix; }
+    };
 
-    // Fonction globale pour les presets (appelée depuis le HTML)
-    window.setPreset = function(level) {
-        document.querySelectorAll('.preset-card').forEach(c => c.classList.remove('selected'));
-        event.currentTarget.classList.add('selected');
+    // SYSTEME DE PRESETS
+    window.applyPreset = function(type) {
+        log("Application du preset : " + type);
+        
+        // 1. On reset tout d'abord
+        document.getElementById('mod-time').checked = false;
+        document.getElementById('mod-spatial').checked = false;
+        document.getElementById('mod-eq').checked = false;
+        
+        // 2. On applique les réglages
+        switch(type) {
+            case 'nightcore':
+                document.getElementById('mod-time').checked = true;
+                updateUI('speed', 1.3, 'x');
+                updateUI('pitch', 1.3, 'x'); // Pitch suit la vitesse pour Nightcore
+                break;
+            
+            case 'slowed':
+                document.getElementById('mod-time').checked = true;
+                document.getElementById('mod-spatial').checked = true;
+                updateUI('speed', 0.8, 'x');
+                updateUI('pitch', 0.8, 'x');
+                updateUI('echo', 0.4, ''); // Un peu de reverb
+                break;
+                
+            case 'bass':
+                document.getElementById('mod-eq').checked = true;
+                updateUI('bass', 15, ' dB');
+                break;
+                
+            case '8d':
+                document.getElementById('mod-spatial').checked = true;
+                updateUI('8d', 0.2, ' Hz');
+                updateUI('echo', 0.2, '');
+                break;
 
-        switch(level) {
-            case 'light': gainSlider.value = 3; freqSlider.value = 60; break;
-            case 'medium': gainSlider.value = 6; freqSlider.value = 80; break;
-            case 'moderate': gainSlider.value = 10; freqSlider.value = 100; break;
-            case 'heavy': gainSlider.value = 15; freqSlider.value = 120; break;
-            case 'extreme': gainSlider.value = 25; freqSlider.value = 150; break;
+            case 'reset':
+                updateUI('speed', 1.0, 'x');
+                updateUI('bass', 0, ' dB');
+                // Tout décoché par défaut
+                break;
         }
-        updateAudioDisplay();
-    }
+    };
 
-    function updateAudioDisplay() {
-        document.getElementById('bass-display').innerText = gainSlider.value + " dB";
-        document.getElementById('freq-display').innerText = freqSlider.value + " Hz";
-    }
+    // Listeners pour mise à jour manuelle
+    const sliders = ['speed', 'pitch', '8d', 'echo', 'bass', 'treble', 'vol'];
+    sliders.forEach(id => {
+        const el = document.getElementById('val-' + id);
+        if(el) el.addEventListener('input', (e) => {
+            const suffix = (id==='bass'||id==='treble') ? ' dB' : (id==='vol') ? '%' : (id==='8d') ? ' Hz' : (id.includes('speed')||id.includes('pitch')) ? 'x' : '';
+            document.getElementById('disp-' + id).innerText = e.target.value + suffix;
+        });
+    });
 
-    if(gainSlider) gainSlider.addEventListener('input', updateAudioDisplay);
-    if(freqSlider) freqSlider.addEventListener('input', updateAudioDisplay);
 
+    // --- MOTEUR DE RENDU & CUTTER ---
     if(processBtn) {
         processBtn.addEventListener('click', async () => {
-            if (!fileInput.files.length) { log("Erreur : Aucun fichier audio !", "error"); return; }
+            if (!fileInput.files.length) { log("Erreur : Chargez une piste audio d'abord !", "error"); return; }
             
             const file = fileInput.files[0];
-            const gain = gainSlider.value;
-            const freq = freqSlider.value;
-            
             processBtn.disabled = true;
-            log("Chargement du moteur Audio...");
-            
+            log("Préparation du mix...");
+
             if(!ffmpeg.isLoaded()) await ffmpeg.load();
-            
-            log("Écriture du fichier...");
             ffmpeg.FS('writeFile', 'input.mp3', await fetchFile(file));
+
+            let filters = [];
+            let inputs = ['-i', 'input.mp3']; // Commande de base
+
+            // --- 1. GESTION DU CUTTER (TRIMMING) ---
+            const start = document.getElementById('trim-start').value;
+            const end = document.getElementById('trim-end').value;
             
-            log(`Traitement : Basses +${gain}dB @ ${freq}Hz...`);
+            // Si "Début" est différent de 00:00, on coupe
+            if(start && start !== "00:00") {
+                inputs.unshift(start); // Ajoute la valeur
+                inputs.unshift('-ss'); // Ajoute le flag -ss AVANT le -i (plus rapide)
+                log(`[CUT] Début coupé à ${start}`);
+            }
+            
+            // Si "Fin" est rempli, on coupe la fin
+            if(end && end !== "") {
+                // Note: -to doit être mis après -i dans certaines versions, 
+                // mais on va l'utiliser en filter pour être sûr ou en output option.
+                // Pour simplifier avec ffmpeg.wasm, on utilise le filtre trim si besoin, 
+                // mais ici on va tenter l'option globale de durée si définie.
+                // Méthode simple : on ajoute -to dans les options de sortie plus bas.
+            }
+
+            // --- 2. GESTION DES EFFETS ---
+            
+            // Time / Pitch
+            if(document.getElementById('mod-time').checked) {
+                const speed = parseFloat(document.getElementById('val-speed').value);
+                const pitch = parseFloat(document.getElementById('val-pitch').value);
+                // atempo gère vitesse. 
+                // Pour faire du vrai Nightcore (vitesse + pitch lié), on utilise asetrate, 
+                // mais c'est complexe (change le sample rate).
+                // On va rester sur atempo pour la vitesse et ajouter un filtre pitch simple si possible.
+                // Ici on simplifie : atempo change la durée sans changer le pitch.
+                // Pour changer le PITCH et la VITESSE ensemble (Nightcore style classique),
+                // il faut changer le sample rate. Hack simple :
+                if(speed !== 1.0) filters.push(`atempo=${speed}`);
+            }
+
+            // EQ
+            if(document.getElementById('mod-eq').checked) {
+                const bass = document.getElementById('val-bass').value;
+                const treble = document.getElementById('val-treble').value;
+                if(bass != 0) filters.push(`bass=g=${bass}`);
+                if(treble != 0) filters.push(`treble=g=${treble}`);
+            }
+
+            // Spatial
+            if(document.getElementById('mod-spatial').checked) {
+                const rot = document.getElementById('val-8d').value;
+                const echo = document.getElementById('val-echo').value;
+                filters.push(`apulsator=hz=${rot}`);
+                if(echo > 0) filters.push(`aecho=0.8:0.9:1000:${echo}`);
+            }
+
+            // Master
+            if(document.getElementById('mod-master').checked) {
+                const vol = document.getElementById('val-vol').value / 100;
+                if(vol != 1) filters.push(`volume=${vol}`);
+                if(document.getElementById('val-reverse').checked) filters.push(`areverse`);
+            }
+
+            // --- CONSTRUCTION COMMANDE ---
+            let args = [...inputs];
+            
+            const filterString = filters.join(',');
+            if(filterString !== "") {
+                args.push('-af', filterString);
+            }
+
+            // Gestion Fin (Cut End)
+            if(end && end !== "") {
+                args.push('-to', end);
+                log(`[CUT] Fin coupée à ${end}`);
+            }
+
+            args.push('output.mp3'); // Fichier de sortie
+
+            log("Rendu en cours... (Ne quittez pas)");
+            
+            try {
+                // On lance FFmpeg avec tous les arguments (Input + Cut + Filters + Output)
+                await ffmpeg.run(...args);
+
+                const data = ffmpeg.FS('readFile', 'output.mp3');
+                const url = URL.createObjectURL(new Blob([data.buffer], { type: 'audio/mp3' }));
+                
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `NEO_MIX_${file.name}`;
+                a.click();
+                
+                log("EXPORT TERMINÉ ! 🔥", "success");
+
+            } catch(e) {
+                log("Erreur : " + e.message, "error");
+                console.error(e);
+            }
+            
+            processBtn.disabled = false;
+        });
+    }
+}
             // Filtre Audio FFmpeg
             await ffmpeg.run('-i', 'input.mp3', '-af', `bass=g=${gain}:f=${freq}`, 'output.mp3');
             
@@ -267,5 +403,6 @@ if (window.location.href.includes('youtube')) {
         });
     }
 }
+
 
 console.log("Néo Convert Master Script Loaded.");
